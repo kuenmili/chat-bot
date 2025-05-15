@@ -1,0 +1,26 @@
+{
+  "name": "medical-chat-widget",
+  "version": "1.0.0",
+  "description": "A framework-agnostic medical chat widget",
+  "main": "dist/medical-chat.umd.js",
+  "module": "dist/medical-chat.esm.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "serve": "serve ."
+  },
+  "dependencies": {
+    "lit": "^2.6.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "rollup-plugin-typescript2": "^0.34.0",
+    "serve": "^14.2.4",
+    "typescript": "^5.0.0"
+  }
+}
