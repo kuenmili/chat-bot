@@ -1,6 +1,6 @@
 {
   "name": "medical-chat-widget",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A framework-agnostic medical chat widget",
   "main": "dist/medical-chat.umd.js",
   "module": "dist/medical-chat.esm.js",
