@@ -3,6 +3,7 @@ import { property } from "lit/decorators.js";
 import "./tab-menu";
 import "./cards-grid";
 import "./chat-window";
+import { QueryPayload } from "../api";
 
 export class WidgetPanel extends LitElement {
   static styles = css`
@@ -128,6 +129,9 @@ export class WidgetPanel extends LitElement {
   doctorData: any = null;
 
   @property({ type: String })
+  consultType: QueryPayload["type"] = "clinical";
+
+  @property({ type: String })
   currentTab = "Consulta clínica";
 
   render() {
@@ -147,9 +151,9 @@ export class WidgetPanel extends LitElement {
 
         <tab-menu
           .tabs=${[
-            { id: "Consulta clínica", label: "Consulta clínica" },
-            { id: "Diagnóstico diferencial", label: "Diagnóstico diferencial" },
-            { id: "Medicamentos", label: "Medicamentos", isNew: true },
+            "Consulta clínica",
+            "Diagnóstico diferencial",
+            "Medicamentos",
           ]}
           .active=${this.currentTab}
           @change=${this._onTab}
@@ -167,16 +171,37 @@ export class WidgetPanel extends LitElement {
     `;
   }
 
-  private _onTab(e: CustomEvent) {
+  private _onTab(
+    e: CustomEvent<
+      "Consulta clínica" | "Diagnóstico diferencial" | "Medicamentos"
+    >
+  ) {
     this.currentTab = e.detail;
+
+    // Mapeo directo al endpoint:
+    if (this.currentTab === "Consulta clínica") {
+      this.consultType = "clinical";
+    } else if (this.currentTab === "Diagnóstico diferencial") {
+      this.consultType = "differential";
+    }
+    // Para “Medicamentos” esperaremos a que el usuario elija un card
   }
 
-  private _onSelect(e: CustomEvent) {
-    this.currentTab = "Consulta clínica";
-    const chatWindow = this.shadowRoot?.querySelector("chat-window") as any;
-    if (chatWindow) {
-      chatWindow.setConsultType(e.detail);
+  private _onSelect(e: CustomEvent<"interaccion" | "adversos" | "patologia">) {
+    // Mapea la key del card al tipo de endpoint
+    switch (e.detail) {
+      case "interaccion":
+        this.consultType = "drugs-interaction";
+        break;
+      case "adversos":
+        this.consultType = "drugs-side-effects";
+        break;
+      case "patologia":
+        this.consultType = "drugs-by-condition";
+        break;
     }
+    // Al seleccionar un card, pasa al chat
+    this.currentTab = "Consulta clínica"; // o mantén “Medicamentos” si prefieres
   }
 }
 

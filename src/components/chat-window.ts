@@ -169,7 +169,8 @@ export class ChatWindow extends LitElement {
 
   @property({ type: Array }) history: any[] = [];
   @property({ type: String }) apiKey = "";
-  @property({ type: String }) consultType = "Consulta clínica";
+  @property({ type: String })
+  consultType: QueryPayload["type"] = "clinical";
   @property({ type: Boolean }) isTyping = false;
 
   firstUpdated() {
@@ -278,10 +279,10 @@ export class ChatWindow extends LitElement {
     let botText: string;
     try {
       const payload: QueryPayload = {
-        type: this.consultType.toLowerCase(),
+        type: this.consultType,
         message: text,
       };
-      const response = await sendQuery(payload);
+      const response = await sendQuery(payload, this.apiKey);
       // Extraemos directamente response.output
       botText = response.output ?? "Lo siento, no hubo respuesta.";
     } catch {
@@ -310,7 +311,7 @@ export class ChatWindow extends LitElement {
 
     try {
       const payload: QueryPayload = {
-        type: this.consultType.toLowerCase(),
+        type: this.consultType,
         message: text,
       };
 
@@ -318,7 +319,7 @@ export class ChatWindow extends LitElement {
       setTimeout(async () => {
         let response: { output?: string };
         try {
-          response = await sendQuery(payload);
+          response = await sendQuery(payload, this.apiKey);
         } catch {
           response = {
             output: "Lo siento, ha ocurrido un error. Intenta de nuevo.",
